@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستودع حسام البرمجي // DevVault</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Tajawal & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#0b1120',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite ease-in-out',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.3', transform: 'scale(1)' },
+                            '50%': { opacity: '0.6', transform: 'scale(1.05)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(45, 212, 191, 0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(20, 184, 166, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col antialiased selection:bg-teal-500 selection:text-slate-950 relative overflow-x-hidden">
+
+    <!-- Ambient Glow Effects -->
+    <div class="fixed top-[-10%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-teal-600/10 blur-[120px] pointer-events-none animation-pulse-glow"></div>
+    <div class="fixed bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-cyan-600/10 blur-[140px] pointer-events-none animation-pulse-glow" style="animation-delay: 1.5s;"></div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo & User -->
+            <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-cyan-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-teal-500/20">
+                    <i data-lucide="terminal" class="w-5 h-5 stroke-[2.5]"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">مستودع البرامج الخاص</span>
+                        <span class="hidden sm:inline-block text-xs font-mono px-2 py-0.5 rounded-full bg-teal-950/80 text-teal-300 border border-teal-800/50">م. حسام</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="flex items-center space-x-2 space-x-reverse sm:space-x-3">
+                <button onclick="toggleModal('guideModal')" class="flex items-center space-x-2 space-x-reverse px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-bold transition-all shadow-md shadow-teal-500/10">
+                    <i data-lucide="globe" class="w-4 h-4"></i>
+                    <span>دليل الاستضافة المجانية</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative z-10">
+
+        <!-- Hero Section -->
+        <div class="glass-card rounded-2xl p-6 sm:p-10 border border-slate-800 relative overflow-hidden">
+            <div class="absolute -left-10 -bottom-10 opacity-5 pointer-events-none">
+                <i data-lucide="code-2" class="w-96 h-96 text-white"></i>
+            </div>
+            <div class="max-w-3xl space-y-4">
+                <div class="inline-flex items-center space-x-2 space-x-reverse px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>جاهز للتحميل بعد الفرمتة</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                    مستودع التطبيقات والأدوات البرمجية الخاصة
+                </h1>
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    منصة شخصية مخصصة لتجميع وتخزين أدوات سطح المكتب، سكربتات الأتمتة، وبرامج الصوتيات التي تم تطويرها بواسطة <strong>حسام</strong>. تنزيل مباشر بنقرة واحدة بعد إعادة تهيئة النظام.
+                </p>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-slate-800/80">
+                <div class="space-y-1">
+                    <span class="text-xs text-slate-400 font-medium">إجمالي البرامج</span>
+                    <p id="statTotalApps" class="text-2xl font-bold font-mono text-teal-400">0</p>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-xs text-slate-400 font-medium">الأقسام الرئيسية</span>
+                    <p id="statCategories" class="text-2xl font-bold font-mono text-cyan-400">0</p>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-xs text-slate-400 font-medium">لغات البرمجة</span>
+                    <p class="text-2xl font-bold font-mono text-violet-400">C# / Python</p>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-xs text-slate-400 font-medium">حالة الملفات</span>
+                    <p class="text-2xl font-bold font-mono text-emerald-400 flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> آمنة ومفحوصة
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Filters Container -->
+        <div class="space-y-4">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+                <!-- Search Input -->
+                <div class="relative flex-grow max-w-lg">
+                    <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="بحث عن تطبيق، أداة، أو لغة برمجة..."
+                        class="w-full pr-10 pl-10 py-2.5 bg-slate-900/90 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
+                    >
+                    <button id="clearSearch" class="hidden absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 hover:text-slate-300">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Add Custom App Button -->
+                <button onclick="toggleModal('addAppModal')" class="flex items-center justify-center space-x-2 space-x-reverse px-4 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-teal-300 text-sm font-medium border border-slate-700/60 transition-all hover:border-teal-500/50 shrink-0">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>إضافة تطبيق جديد للقائمة</span>
+                </button>
+            </div>
+
+            <!-- Category Filter Chips -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar" id="categoryChips">
+                <!-- Chips dynamically injected here -->
+            </div>
+        </div>
+
+        <!-- Apps Grid -->
+        <div id="appsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- App Cards dynamically injected here -->
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="emptyState" class="hidden glass-card rounded-2xl p-12 text-center space-y-4 max-w-md mx-auto my-12">
+            <div class="w-16 h-16 mx-auto rounded-full bg-slate-800 flex items-center justify-center text-slate-500">
+                <i data-lucide="folder-search" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-slate-200">لم يتم العثور على برامج</h3>
+            <p class="text-sm text-slate-400">لا توجد تطبيقات تطابق نص البحث أو القسم المحدد حالياً.</p>
+            <button onclick="resetFilters()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-teal-400 text-xs font-semibold rounded-lg transition-all">
+                إعادة ضبط خيارات الفلترة
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800/80 glass-panel py-6 text-xs text-slate-500 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                <span>المستودع البرمجي الخاص بحسام // جميع النسخ مجانية وجاهزة للتحميل</span>
+            </div>
+            <div class="font-mono text-slate-600 dir-ltr">
+                Designed & Built for Hussam
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Box -->
+    <div id="toastContainer" class="fixed bottom-6 left-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- MODAL 1: How to Host on GitHub Pages Guide -->
+    <div id="guideModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+        <div class="glass-card w-full max-w-2xl rounded-2xl p-6 space-y-6 border border-slate-700 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <div class="p-2 rounded-lg bg-teal-500/10 text-teal-400">
+                        <i data-lucide="globe" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-100">طريقة رفع الموقع مجاناً مدى الحياة</h3>
+                </div>
+                <button onclick="toggleModal('guideModal')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-teal-400 text-sm flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-teal-950 text-teal-400 flex items-center justify-center text-xs font-mono">1</span>
+                        إنشاء مستودع GitHub
+                    </h4>
+                    <p class="text-slate-400 pl-7">
+                        قم بإنشاء مستودع جديد (Repository) على موقع GitHub باسم مثلاً <code class="text-teal-300 bg-slate-950 px-1.5 py-0.5 rounded dir-ltr inline-block">my-apps</code>.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-teal-400 text-sm flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-teal-950 text-teal-400 flex items-center justify-center text-xs font-mono">2</span>
+                        حفظ الملف باسم index.html
+                    </h4>
+                    <p class="text-slate-400 pl-7">
+                        احفظ هذا الكود كاملاً في ملف باسم <code class="text-teal-300 bg-slate-950 px-1.5 py-0.5 rounded dir-ltr inline-block">index.html</code> وقم برفعه إلى المستودع.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-teal-400 text-sm flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-teal-950 text-teal-400 flex items-center justify-center text-xs font-mono">3</span>
+                        رفع برامجك الخاصة (.exe / .zip)
+                    </h4>
+                    <p class="text-slate-400 pl-7">
+                        قم برفع برامجك إلى خيار <strong>Releases</strong> في صفحة GitHub للحصول على روابط تنزيل مباشرة وسريعة، ثم ضع هذه الروابط في القائمة أسفل الكود.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-teal-400 text-sm flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-teal-950 text-teal-400 flex items-center justify-center text-xs font-mono">4</span>
+                        تفعيل GitHub Pages
+                    </h4>
+                    <p class="text-slate-400 pl-7">
+                        اذهب إلى <strong>Settings -> Pages</strong> في مستودعك، واختر فرع <code class="text-teal-300 bg-slate-950 px-1.5 py-0.5 rounded">main</code> ثم انقر <strong>Save</strong>. سيعطيك الموقع رابطاً مجانياً يعمل مدى الحياة!
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button onclick="toggleModal('guideModal')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all">
+                    إغلاق الدليل
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Add Custom App Entry -->
+    <div id="addAppModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+        <div class="glass-card w-full max-w-lg rounded-2xl p-6 space-y-5 border border-slate-700 shadow-2xl relative">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <div class="p-2 rounded-lg bg-teal-500/10 text-teal-400">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-100">إضافة تطبيق جديد للقائمة</h3>
+                </div>
+                <button onclick="toggleModal('addAppModal')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="addAppForm" onsubmit="handleAddNewApp(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block text-slate-300 font-medium mb-1">اسم التطبيق</label>
+                    <input type="text" id="newAppName" required placeholder="مثال: أداة قص الفيديوهات" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-teal-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-300 font-medium mb-1">القسم</label>
+                        <select id="newAppCategory" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-teal-500">
+                            <option value="تطبيقات C#/WPF">تطبيقات C#/WPF</option>
+                            <option value="أدوات الصوتيات">أدوات الصوتيات</option>
+                            <option value="أدوات Python">أدوات Python</option>
+                            <option value="أخرى">أخرى</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-medium mb-1">الإصدار</label>
+                        <input type="text" id="newAppVersion" required placeholder="v1.0.0" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-teal-500 dir-ltr">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-300 font-medium mb-1">لغة / تقنية البرمجة (مفصولة بفواصل)</label>
+                    <input type="text" id="newAppTags" required placeholder="C#, WPF, .NET 8" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-teal-500 dir-ltr">
+                </div>
+                <div>
+                    <label class="block text-slate-300 font-medium mb-1">وصف مختصر للبرنامج</label>
+                    <textarea id="newAppDesc" required rows="2" placeholder="اكتب شرحاً قصيراً عما يفعله هذا البرنامج..." class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-teal-500"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-300 font-medium mb-1">حجم الملف</label>
+                        <input type="text" id="newAppSize" required placeholder="15.5 MB" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-teal-500 dir-ltr">
+                    </div>
+                    <div>
+                        <label class="block text-slate-300 font-medium mb-1">رابط التنزيل المباشر</label>
+                        <input type="url" id="newAppUrl" required placeholder="https://..." class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-teal-500 dir-ltr">
+                    </div>
+                </div>
+                <div class="pt-2 flex justify-end space-x-2 space-x-reverse">
+                    <button type="button" onclick="toggleModal('addAppModal')" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">إلغاء</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold">حفظ التطبيق</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC & EASY-TO-EDIT DATA ARRAY -->
+    <script>
+        /**
+         * =================================================================
+         * مصفوفة بيانات البرامج (EASY-TO-EDIT APPS ARRAY)
+         * يمكنك إضافة أو تعديل أو حذف برامجك من هنا مباشرة وبسهولة!
+         * =================================================================
+         */
+        const APPS_DATA = [
+            {
+                id: 'app-1',
+                name: 'برنامج التحميل الذكي',
+                version: 'v2.1.0',
+                category: 'تطبيقات C#/WPF',
+                icon: 'download-cloud',
+                accentColor: 'from-teal-500 to-blue-600',
+                description: 'تطبيق سطح مكتب سريع لتحميل مقاطع الفيديو وقص مقاطع إنستغرام مع استخراج الصوت تلقائياً باستخدام C# و WPF.',
+                tags: ['C#', 'WPF', 'NAudio', 'FFmpeg'],
+                size: '28.4 MB',
+                updated: '2026-10-15',
+                downloadUrl: 'https://github.com/hussam/releases/download/v2.1.0/SmartDownloader.exe'
+            },
+            {
+                id: 'app-2',
+                name: 'أداة عزل الصوت بالذكاء الاصطناعي',
+                version: 'v1.4.2',
+                category: 'أدوات Python',
+                icon: 'mic-2',
+                accentColor: 'from-violet-500 to-purple-600',
+                description: 'واجهة رسومية لعزل الصوت عن الموسيقى باستخدام نماذج الذكاء الاصطناعي وتسريع كروت الشاشة CUDA.',
+                tags: ['Python', 'CUDA', 'PyTorch', 'WPF GUI'],
+                size: '142.0 MB',
+                updated: '2026-09-28',
+                downloadUrl: 'https://github.com/hussam/releases/download/v1.4.2/VoiceSeparator.zip'
+            },
+            {
+                id: 'app-3',
+                name: 'مدير الفلاتر والصوتيات',
+                version: 'v1.0.5',
+                category: 'أدوات الصوتيات',
+                icon: 'sliders',
+                accentColor: 'from-emerald-500 to-teal-600',
+                description: 'أداة سريعة للتحويل بين بروفايلات الإيكوالايزر وسلاسل فلاتر VST3 بنقرة واحدة من شريط المهام.',
+                tags: ['C#', 'VST3', 'Equalizer APO'],
+                size: '8.7 MB',
+                updated: '2026-10-02',
+                downloadUrl: 'https://github.com/hussam/releases/download/v1.0.5/AudioChainManager.msi'
+            },
+            {
+                id: 'app-4',
+                name: 'سكربت التهيئة السريعة',
+                version: 'v4.0.0',
+                category: 'أخرى',
+                icon: 'terminal',
+                accentColor: 'from-pink-500 to-rose-600',
+                description: 'سكربت PowerShell أوتوماتيكي لتثبيت جميع البرامج الأساسية (VS Code, Git, Python) بضغطة زر بعد فرمتة الجهاز.',
+                tags: ['PowerShell', 'Winget', 'Automation'],
+                size: '120 KB',
+                updated: '2026-10-20',
+                downloadUrl: 'https://github.com/hussam/releases/download/v4.0.0/QuickSetup.ps1'
+            }
+        ];
+
+        // Global State
+        let currentCategory = 'الكل';
+        let searchQuery = '';
+
+        // DOM Loaded Handler
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategoryChips();
+            renderApps();
+            updateStats();
+            setupEventListeners();
+            lucide.createIcons();
+        });
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            const searchInput = document.getElementById('searchInput');
+            const clearSearch = document.getElementById('clearSearch');
+
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase().trim();
+                clearSearch.classList.toggle('hidden', searchQuery === '');
+                renderApps();
+            });
+
+            clearSearch.addEventListener('click', () => {
+                searchInput.value = '';
+                searchQuery = '';
+                clearSearch.classList.add('hidden');
+                renderApps();
+            });
+        }
+
+        // Render Category Chips
+        function renderCategoryChips() {
+            const categories = ['الكل', 'تطبيقات C#/WPF', 'أدوات الصوتيات', 'أدوات Python', 'أخرى'];
+            const chipsContainer = document.getElementById('categoryChips');
+            
+            chipsContainer.innerHTML = categories.map(cat => {
+                const isActive = cat === currentCategory;
+                return `
+                    <button 
+                        onclick="setCategory('${cat}')"
+                        class="px-3.5 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all border ${
+                            isActive 
+                            ? 'bg-teal-500/10 border-teal-500 text-teal-300 shadow-sm shadow-teal-500/20 font-bold' 
+                            : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                        }"
+                    >
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+
+            document.getElementById('statCategories').textContent = categories.length - 1;
+        }
+
+        // Filter and Render Apps Grid
+        function renderApps() {
+            const grid = document.getElementById('appsGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            const filteredApps = APPS_DATA.filter(app => {
+                const matchesCategory = currentCategory === 'الكل' || app.category === currentCategory;
+                const matchesSearch = searchQuery === '' || 
+                    app.name.toLowerCase().includes(searchQuery) ||
+                    app.description.toLowerCase().includes(searchQuery) ||
+                    app.tags.some(tag => tag.toLowerCase().includes(searchQuery));
+
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filteredApps.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                grid.innerHTML = filteredApps.map(app => `
+                    <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-5">
+                        <div class="space-y-4">
+                            <!-- Card Header -->
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-center space-x-3 space-x-reverse">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr ${app.accentColor} flex items-center justify-center text-white shadow-lg shadow-black/40 shrink-0">
+                                        <i data-lucide="${app.icon}" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-base font-bold text-white tracking-tight leading-snug">${app.name}</h3>
+                                        <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/50 inline-block mt-0.5 dir-ltr">${app.version}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                                ${app.description}
+                            </p>
+
+                            <!-- Tech Badges -->
+                            <div class="flex flex-wrap gap-1.5 pt-1 dir-ltr justify-end">
+                                ${app.tags.map(tag => `
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-900/90 text-teal-300/80 border border-teal-900/40">
+                                        ${tag}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Card Footer Info & Action -->
+                        <div class="pt-4 border-t border-slate-800/80 space-y-3">
+                            <div class="flex justify-between items-center text-[11px] text-slate-400">
+                                <span class="font-mono dir-ltr">الحجم: ${app.size}</span>
+                                <span>تاريخ التحديث: ${app.updated}</span>
+                            </div>
+
+                            <a 
+                                href="${app.downloadUrl}" 
+                                onclick="handleDownload(event, '${app.name}')"
+                                class="w-full flex items-center justify-center space-x-2 space-x-reverse py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-bold text-xs tracking-wide transition-all shadow-md shadow-teal-500/10 active:scale-[0.98]"
+                            >
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                <span>تحميل البرنامج الآن</span>
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            lucide.createIcons();
+        }
+
+        // Set Category
+        function setCategory(cat) {
+            currentCategory = cat;
+            renderCategoryChips();
+            renderApps();
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            currentCategory = 'الكل';
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearch').classList.add('hidden');
+            renderCategoryChips();
+            renderApps();
+        }
+
+        // Update Stats Bar
+        function updateStats() {
+            document.getElementById('statTotalApps').textContent = APPS_DATA.length;
+        }
+
+        // Modal Toggle Handler
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.toggle('hidden');
+        }
+
+        // Handle Add New Custom App Form
+        function handleAddNewApp(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('newAppName').value;
+            const category = document.getElementById('newAppCategory').value;
+            const version = document.getElementById('newAppVersion').value;
+            const tags = document.getElementById('newAppTags').value.split(',').map(t => t.trim());
+            const description = document.getElementById('newAppDesc').value;
+            const size = document.getElementById('newAppSize').value;
+            const downloadUrl = document.getElementById('newAppUrl').value;
+
+            const newApp = {
+                id: `app-${Date.now()}`,
+                name,
+                version,
+                category,
+                icon: 'package',
+                accentColor: 'from-teal-500 to-indigo-600',
+                description,
+                tags,
+                size,
+                updated: new Date().toISOString().split('T')[0],
+                downloadUrl
+            };
+
+            APPS_DATA.unshift(newApp);
+            renderCategoryChips();
+            renderApps();
+            updateStats();
+
+            toggleModal('addAppModal');
+            document.getElementById('addAppForm').reset();
+
+            showToast(`تمت إضافة "${name}" إلى المستودع بنجاح!`);
+        }
+
+        // Download Action Toast Notification
+        function handleDownload(event, appName) {
+            showToast(`جاري بدء تنزيل ${appName}...`);
+        }
+
+        // Toast Notification Function
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'glass-panel px-4 py-3 rounded-xl border border-teal-500/40 text-slate-100 text-xs font-medium shadow-xl flex items-center space-x-2 space-x-reverse animate-bounce pointer-events-auto';
+            toast.innerHTML = `
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
